@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{209D3D18-3D68-49D6-80BD-AD36C04ECD1C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3233BD9B-73CE-4142-A5B2-5B0BAB4AFC2C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{4A45EC79-4255-4335-9A09-C4CE14D09DA5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC824EBB-5869-4FF7-992C-192A9D93DA90}"
+	ProjectSection(SolutionItems) = preProject
+		docs\inference_example_result.json = docs\inference_example_result.json
+		docs\inference_result_e10af7e9-5c31-4d93-aece-310b2d45e986.json = docs\inference_result_e10af7e9-5c31-4d93-aece-310b2d45e986.json
+		docs\Local_Run.md = docs\Local_Run.md
+		docs\white-marble.jpg = docs\white-marble.jpg
+		docs\yellow-marble.jpg = docs\yellow-marble.jpg
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarbleQualityBot.Core", "src\MarbleQualityBot.Core\MarbleQualityBot.Core.csproj", "{C02524B2-B2E7-47BF-9C9B-1F5F3D94ABAF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarbleQualityBot.API", "src\MarbleQualityBot.API\MarbleQualityBot.API.csproj", "{2E8B6511-605C-4429-832B-2328001FF36D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C02524B2-B2E7-47BF-9C9B-1F5F3D94ABAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C02524B2-B2E7-47BF-9C9B-1F5F3D94ABAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C02524B2-B2E7-47BF-9C9B-1F5F3D94ABAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C02524B2-B2E7-47BF-9C9B-1F5F3D94ABAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E8B6511-605C-4429-832B-2328001FF36D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E8B6511-605C-4429-832B-2328001FF36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E8B6511-605C-4429-832B-2328001FF36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E8B6511-605C-4429-832B-2328001FF36D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C02524B2-B2E7-47BF-9C9B-1F5F3D94ABAF} = {209D3D18-3D68-49D6-80BD-AD36C04ECD1C}
+		{2E8B6511-605C-4429-832B-2328001FF36D} = {209D3D18-3D68-49D6-80BD-AD36C04ECD1C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EA35914-E5EF-4047-B91C-5454EC562A1B}
+	EndGlobalSection
+EndGlobal

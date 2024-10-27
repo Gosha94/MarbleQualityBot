@@ -1,0 +1,31 @@
+{
+  "inference_id": "d214a0a9-83d5-4af9-abce-d9598b919142",
+  "time": 0.7389415020002161,
+  "image": {
+    "width": 1280,
+    "height": 720
+  },
+  "predictions": {
+    "x": 674.5,
+    "y": 369.0,
+    "width": 889.0,
+    "height": 472.0,
+    "confidence": 0.718984067440033,
+    "class": "3",
+    "class_id": 3,
+    "detection_id": "6076a9a3-9292-40a2-85e7-d62b792829ff"
+  }
+}
+
+
+//var inferenceResult = new
+//{
+//    inference_id = "d214a0a9-83d5-4af9-abce-d9598b919142",
+//    time = 0.7389415020002161,
+//    image = new { width = 1280, height = 720 },
+//    predictions = new[]
+//    {
+//        new { x = 674.5, y = 369.0, width = 889.0, height = 472.0, confidence = 0.718984067440033, @class = "3", class_id = 3, detection_id = "6076a9a3-9292-40a2-85e7-d62b792829ff" },
+//        new { x = 683.0, y = 369.0, width = 888.0, height = 474.0, confidence = 0.40001535415649414, @class = "2", class_id = 2, detection_id = "0e971263-d15a-4568-8e82-4e3ed07a1800" }
+//    }
+//};
