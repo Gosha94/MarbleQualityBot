@@ -3,6 +3,7 @@ using MarbleQualityBot.Core.Config;
 using MarbleQualityBot.Core.Features.ProcessTelegramMessage;
 using Telegram.Bot;
 using MarbleQualityBot.Core.Integrations.Clients;
+using MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.PostConfigure<DetectionApiSettings>(options =>
     var secretValue = builder.Configuration["DetectionApiSettings:ApiKey"];
     options.ApiKey = secretValue ?? string.Empty;
 });
+
+builder.Services.AddTransient<IOutliningService, OutliningService>();
 
 builder.Services.AddTransient<IDetectionApi, DetectionApi>();
 

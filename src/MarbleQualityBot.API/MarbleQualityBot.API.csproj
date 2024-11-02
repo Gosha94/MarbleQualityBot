@@ -16,6 +16,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Fonts\Amatic-Bold.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Fonts\Amatic-Bold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.19" />
@@ -25,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarbleQualityBot.Core\MarbleQualityBot.Core.csproj" />
+    <ProjectReference Include="..\MarbleQualityBot.DTO\MarbleQualityBot.DTO.csproj" />
   </ItemGroup>
 
 </Project>

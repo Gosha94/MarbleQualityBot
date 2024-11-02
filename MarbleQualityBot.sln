@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarbleQualityBot.Core", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarbleQualityBot.API", "src\MarbleQualityBot.API\MarbleQualityBot.API.csproj", "{2E8B6511-605C-4429-832B-2328001FF36D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarbleQualityBot.DTO", "src\MarbleQualityBot.DTO\MarbleQualityBot.DTO.csproj", "{2F8E5B57-FCCA-4F0E-93BC-ED0439BF002B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{2E8B6511-605C-4429-832B-2328001FF36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E8B6511-605C-4429-832B-2328001FF36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E8B6511-605C-4429-832B-2328001FF36D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F8E5B57-FCCA-4F0E-93BC-ED0439BF002B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F8E5B57-FCCA-4F0E-93BC-ED0439BF002B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F8E5B57-FCCA-4F0E-93BC-ED0439BF002B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F8E5B57-FCCA-4F0E-93BC-ED0439BF002B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C02524B2-B2E7-47BF-9C9B-1F5F3D94ABAF} = {209D3D18-3D68-49D6-80BD-AD36C04ECD1C}
 		{2E8B6511-605C-4429-832B-2328001FF36D} = {209D3D18-3D68-49D6-80BD-AD36C04ECD1C}
+		{2F8E5B57-FCCA-4F0E-93BC-ED0439BF002B} = {209D3D18-3D68-49D6-80BD-AD36C04ECD1C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9EA35914-E5EF-4047-B91C-5454EC562A1B}
