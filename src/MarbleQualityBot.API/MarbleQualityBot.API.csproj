@@ -10,9 +10,13 @@
 
   <ItemGroup>
     <Compile Remove="FileStore\**" />
+    <Compile Remove="OutlinedImages\**" />
     <Content Remove="FileStore\**" />
+    <Content Remove="OutlinedImages\**" />
     <EmbeddedResource Remove="FileStore\**" />
+    <EmbeddedResource Remove="OutlinedImages\**" />
     <None Remove="FileStore\**" />
+    <None Remove="OutlinedImages\**" />
   </ItemGroup>
 
   <ItemGroup>

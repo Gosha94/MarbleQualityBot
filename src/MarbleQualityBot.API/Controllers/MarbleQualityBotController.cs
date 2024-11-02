@@ -7,6 +7,8 @@ using Telegram.Bot.Types;
 using System.Text.Json;
 using MarbleQualityBot.DTO.Requests;
 using MarbleQualityBot.Core.Features.ProcessObjectOutline;
+using MarbleQualityBot.Core.Config;
+using Microsoft.Extensions.Options;
 
 namespace MarbleQualityBot.API.Controllers;
 
@@ -56,6 +58,7 @@ public class MarbleQualityBotController : ControllerBase
     [HttpPost("outline-objects")]
     public async Task<IActionResult> OutlineObjects(
         [FromForm] OutlineObjectsRequest request,
+        [FromServices] IOptions<TelegramBotSettings> _botSettings,
         [FromServices] IMediator _mediator)
     {
         if (request.ImageFile == null || request.ImageFile.Length == 0)
@@ -93,10 +96,10 @@ public class MarbleQualityBotController : ControllerBase
             inputModel = await JsonSerializer.DeserializeAsync<Inference>(memoryStream) ?? new Inference();
         }
 
-        var saveDirectory = Path.Combine(Directory.GetCurrentDirectory(), "OutlinedImages");
+        var saveDirectory = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.Value.LocalStoragePath);
         Directory.CreateDirectory(saveDirectory);
 
-        var imagePath = Path.Combine(saveDirectory, request.ImageFile.FileName);
+        var imagePath = Path.Combine(saveDirectory, request.ImageFile.FileName + '_' + Guid.NewGuid());
 
         using (var fileStream = new FileStream(imagePath, FileMode.Create))
         {

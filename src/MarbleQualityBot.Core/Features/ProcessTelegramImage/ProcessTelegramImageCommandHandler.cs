@@ -6,6 +6,8 @@ using MarbleQualityBot.Core.Domain.Entities;
 using MarbleQualityBot.Core.Features.ProcessTelegramMessage;
 using MarbleQualityBot.Core.Integrations.Clients;
 using Telegram.Bot;
+using System.Text.Json;
+using MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
 using Telegram.Bot.Types;
 
 namespace MarbleQualityBot.Core.Features.ProcessTelegramImage;
@@ -16,6 +18,7 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
 {
     private readonly ITelegramBotClient _botClient;
     private readonly IDetectionApi _detectionApi;
+    private readonly IOutliningService _outliningService;
     private readonly TelegramBotSettings _botSettings;
     private readonly int _maxFileSizeInBytes;
     private readonly ILogger<ProcessTelegramTextHandler> _logger;
@@ -23,11 +26,13 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
     public ProcessTelegramImageCommandHandler(
         ITelegramBotClient botClient,
         IDetectionApi detectionApi,
+        IOutliningService outliningService,
         IOptions<TelegramBotSettings> botSettings,
         ILogger<ProcessTelegramTextHandler> logger)
     {
         _botClient = botClient;
         _detectionApi = detectionApi;
+        _outliningService = outliningService;
         _botSettings = botSettings.Value;
         _maxFileSizeInBytes = _botSettings.MaxFileSizeMb * 1024 * 1024;
         _logger = logger;
@@ -48,27 +53,52 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
             if (file.FileSize > _maxFileSizeInBytes)
             {
                 await _botClient.SendTextMessageAsync(request.Message.ChatId,
-                    $"File size exceeds the {_botSettings.MaxFileSizeMb} MB limit and has been deleted. Please send a smaller file.");
+                    $"File size exceeds the {_botSettings.MaxFileSizeMb} MB limit and has been deleted. Please send a smaller file.", cancellationToken: ct);
 
                 return;
             }
 
-            await _botClient.SendTextMessageAsync(request.Message.ChatId, $"Processing your picture...");
+            await _botClient.SendTextMessageAsync(request.Message.ChatId, $"Processing your picture...", cancellationToken: ct);
 
             var fullFilePath = $"https://api.telegram.org/file/bot{_botSettings.BotToken}/{file.FilePath}";
 
-            var response = await _detectionApi.DetectFromUrl(fullFilePath);
+            // Just request throttling
             await Task.Delay(5000);
 
-            var jsonFileName = $"inference_result_{Guid.NewGuid()}.json";
-            await System.IO.File.WriteAllTextAsync(jsonFileName, response);
+            var response = await _detectionApi.DetectFromUrl(fullFilePath);
+            var inferenceModel = JsonSerializer.Deserialize<Inference>(response) ?? new Inference();
 
-            using var fileStream = new FileStream(jsonFileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var inputOnlineFile = InputFile.FromStream(fileStream, jsonFileName);
-            await _botClient.SendDocumentAsync(request.Message.ChatId, inputOnlineFile, caption: "Inference Results");
+            var localImagePath = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.LocalStoragePath, Guid.NewGuid() + Path.GetExtension(file.FilePath));
 
-            fileStream.Close();
-            System.IO.File.Delete(jsonFileName);
+            using (var httpClient = new HttpClient())
+            {
+                var imageBytes = await httpClient.GetByteArrayAsync(fullFilePath);
+
+                await System.IO.File.WriteAllBytesAsync(localImagePath, imageBytes);
+            }
+
+            await _outliningService.DrawPredictionsOnImage(localImagePath, inferenceModel);
+
+            using (var fileStream = new FileStream(localImagePath, FileMode.Open, FileAccess.Read))
+            {
+                var inputFile = new InputFileStream(fileStream);
+
+                var message = await _botClient.SendPhotoAsync(
+                    chatId: request.Message.ChatId,
+                    photo: inputFile,
+                    caption: "Here is your outlined image!", cancellationToken: ct
+                );
+
+                _logger.LogInformation($"Outlined image sent successfully! Message ID: {message.MessageId}");
+            }
+
+            // Just delay before deleting image
+            await Task.Delay(1000);
+
+            if (System.IO.File.Exists(localImagePath))
+            {
+                System.IO.File.Delete(localImagePath);
+            }
         }
     }
 }

@@ -4,5 +4,5 @@ namespace MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
 
 public interface IOutliningService
 {
-    void DrawPredictionsOnImage(string imagePath, Inference model);
+    Task DrawPredictionsOnImage(string imagePath, Inference model);
 }

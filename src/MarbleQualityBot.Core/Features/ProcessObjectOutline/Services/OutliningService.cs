@@ -3,7 +3,6 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using MarbleQualityBot.Core.Domain.Entities;
 using SixLabors.Fonts;
-using System.Reflection.Emit;
 
 namespace MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
 
@@ -11,7 +10,7 @@ public class OutliningService : IOutliningService
 {
     public const int _paddingPx = 5;
 
-    public void DrawPredictionsOnImage(string imagePath, Inference model)
+    public Task DrawPredictionsOnImage(string imagePath, Inference model)
     {
         var classColors = new Dictionary<int, Color>
             {
@@ -56,5 +55,7 @@ public class OutliningService : IOutliningService
 
             image.Save(imagePath);
         }
+
+        return Task.CompletedTask;
     }
 }
