@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Ignore FileStore folder and its contents
+FileStore/
+
+# Ignore OutlinedImages folder and its contents
+OutlinedImages/
+
 # User-specific files
 *.rsuser
 *.suo
