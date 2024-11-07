@@ -63,10 +63,12 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
             var fullFilePath = $"https://api.telegram.org/file/bot{_botSettings.BotToken}/{file.FilePath}";
 
             // Just request throttling
-            await Task.Delay(5000);
+            await Task.Delay(3000);
 
             var response = await _detectionApi.DetectFromUrl(fullFilePath);
             var inferenceModel = JsonSerializer.Deserialize<Inference>(response) ?? new Inference();
+
+            var filteredInference = FilterInferenceBy(inferenceModel, 0.4);
 
             var localImagePath = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.LocalStoragePath, Guid.NewGuid() + Path.GetExtension(file.FilePath));
 
@@ -77,28 +79,38 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
                 await System.IO.File.WriteAllBytesAsync(localImagePath, imageBytes);
             }
 
-            await _outliningService.DrawPredictionsOnImage(localImagePath, inferenceModel);
+            await _outliningService.DrawPredictionsOnImage(localImagePath, filteredInference);
 
-            using (var fileStream = new FileStream(localImagePath, FileMode.Open, FileAccess.Read))
+            using (var imageFileStream = new FileStream(localImagePath, FileMode.Open, FileAccess.Read))
             {
-                var inputFile = new InputFileStream(fileStream);
+                var inputFileStream = InputFile.FromStream(imageFileStream);
 
                 var message = await _botClient.SendPhotoAsync(
                     chatId: request.Message.ChatId,
-                    photo: inputFile,
-                    caption: "Here is your outlined image!", cancellationToken: ct
+                    photo: inputFileStream,
+                    caption: "Here is your outlined image!",
+                    cancellationToken: ct
                 );
 
                 _logger.LogInformation($"Outlined image sent successfully! Message ID: {message.MessageId}");
             }
 
+            var jsonFileName = $"detection_result_{Guid.NewGuid()}.json";
+            var localJsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.LocalStoragePath, Guid.NewGuid() + Path.GetExtension(file.FilePath));
+            await System.IO.File.WriteAllTextAsync(localJsonFilePath, response);
+
             // Just delay before deleting image
             await Task.Delay(1000);
 
-            if (System.IO.File.Exists(localImagePath))
-            {
-                System.IO.File.Delete(localImagePath);
-            }
+            System.IO.File.Delete(jsonFileName);
+            System.IO.File.Delete(localImagePath);
         }
+    }
+
+    private Inference FilterInferenceBy(Inference inference, double lowerThreshold)
+    {
+        inference.Predictions = inference.Predictions.Where(p => p.Confidence > lowerThreshold).ToList();
+
+        return inference;
     }
 }
