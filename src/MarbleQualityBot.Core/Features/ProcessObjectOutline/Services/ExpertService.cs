@@ -3,14 +3,16 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using MarbleQualityBot.Core.Domain.Entities;
 using SixLabors.Fonts;
+using System.Linq;
 
 namespace MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
 
-public class OutliningService : IOutliningService
+public class ExpertService : IExpertService
 {
-    public const int _paddingPx = 5;
+    private const int _PADDING_PX = 5;
+    private const string _REJECTED_CLASS = "1";
 
-    public Task DrawPredictionsOnImage(string imagePath, Inference model)
+    public Task HighlightPredictionsOnImage(string imagePath, Inference model)
     {
         var classColors = new Dictionary<int, Color>
             {
@@ -58,4 +60,15 @@ public class OutliningService : IOutliningService
 
         return Task.CompletedTask;
     }
+
+    public Task<List<RejectedMaterialCoordinate>> TryCollectRejectedMaterialsCoordinates(Inference model)
+        => Task.FromResult(
+                model.Predictions
+                    .Where(p => p.Class == _REJECTED_CLASS)
+                    .Select(p => new RejectedMaterialCoordinate
+                    {
+                        CenterX = p.Width != 0 ? Math.Round(p.X + p.Width / 2) : Math.Round(p.X),
+                        CenterY = p.Height != 0 ? Math.Round(p.Y + p.Height / 2) : Math.Round(p.Y)
+                    })
+                    .ToList());
 }

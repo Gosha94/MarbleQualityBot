@@ -9,11 +9,11 @@ public record OutlineObjectsCommand(string ImagePath, Inference PredictionModel)
 
 public class OutlineObjectsCommandHandler : IRequestHandler<OutlineObjectsCommand, bool>
 {
-    private readonly IOutliningService _outliningService;
+    private readonly IExpertService _outliningService;
     private readonly ILogger<OutlineObjectsCommandHandler> _logger;
 
     public OutlineObjectsCommandHandler(
-        IOutliningService outliningService,
+        IExpertService outliningService,
         ILogger<OutlineObjectsCommandHandler> logger)
     {
         _outliningService = outliningService;
@@ -22,7 +22,7 @@ public class OutlineObjectsCommandHandler : IRequestHandler<OutlineObjectsComman
 
     public async Task<bool> Handle(OutlineObjectsCommand request, CancellationToken ct)
     {
-        _outliningService.DrawPredictionsOnImage(request.ImagePath, request.PredictionModel);
+        _outliningService.HighlightPredictionsOnImage(request.ImagePath, request.PredictionModel);
 
         _logger.LogInformation($"Image was outlined, saved instead an original one here: {request.ImagePath}");
         return true;

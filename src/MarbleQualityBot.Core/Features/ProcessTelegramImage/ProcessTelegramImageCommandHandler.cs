@@ -9,6 +9,8 @@ using Telegram.Bot;
 using System.Text.Json;
 using MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
 using Telegram.Bot.Types;
+using Microsoft.VisualBasic;
+using System.Text;
 
 namespace MarbleQualityBot.Core.Features.ProcessTelegramImage;
 
@@ -18,7 +20,7 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
 {
     private readonly ITelegramBotClient _botClient;
     private readonly IDetectionApi _detectionApi;
-    private readonly IOutliningService _outliningService;
+    private readonly IExpertService _expertSystem;
     private readonly TelegramBotSettings _botSettings;
     private readonly int _maxFileSizeInBytes;
     private readonly ILogger<ProcessTelegramTextHandler> _logger;
@@ -26,13 +28,13 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
     public ProcessTelegramImageCommandHandler(
         ITelegramBotClient botClient,
         IDetectionApi detectionApi,
-        IOutliningService outliningService,
+        IExpertService outliningService,
         IOptions<TelegramBotSettings> botSettings,
         ILogger<ProcessTelegramTextHandler> logger)
     {
         _botClient = botClient;
         _detectionApi = detectionApi;
-        _outliningService = outliningService;
+        _expertSystem = outliningService;
         _botSettings = botSettings.Value;
         _maxFileSizeInBytes = _botSettings.MaxFileSizeMb * 1024 * 1024;
         _logger = logger;
@@ -79,7 +81,7 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
                 await System.IO.File.WriteAllBytesAsync(localImagePath, imageBytes);
             }
 
-            await _outliningService.DrawPredictionsOnImage(localImagePath, filteredInference);
+            await _expertSystem.HighlightPredictionsOnImage(localImagePath, filteredInference);
 
             using (var imageFileStream = new FileStream(localImagePath, FileMode.Open, FileAccess.Read))
             {
@@ -93,6 +95,22 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
                 );
 
                 _logger.LogInformation($"Outlined image sent successfully! Message ID: {message.MessageId}");
+            }
+
+            var rejectedRockCoordinates = await _expertSystem.TryCollectRejectedMaterialsCoordinates(filteredInference);
+
+            if (rejectedRockCoordinates.Any())
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("Please, use these coordinates below to remove rejected rocks:");
+
+                rejectedRockCoordinates
+                    .ForEach(rc =>
+                        {
+                            sb.AppendLine($"X={rc.CenterX}, Y={rc.CenterY}");
+                        });
+
+                await _botClient.SendTextMessageAsync(request.Message.ChatId, sb.ToString(), cancellationToken: ct);
             }
 
             var jsonFileName = $"detection_result_{Guid.NewGuid()}.json";

@@ -29,7 +29,7 @@ builder.Services.PostConfigure<DetectionApiSettings>(options =>
     options.ApiKey = secretValue ?? string.Empty;
 });
 
-builder.Services.AddTransient<IOutliningService, OutliningService>();
+builder.Services.AddTransient<IExpertService, ExpertService>();
 
 builder.Services.AddTransient<IDetectionApi, DetectionApi>();
 
