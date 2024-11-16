@@ -6,5 +6,7 @@ public interface IExpertService
 {
     Task HighlightPredictionsOnImage(string imagePath, Inference model);
 
+    Task<Inference> FilterInferenceByThreshold(Inference inference);
+
     Task<List<RejectedMaterialCoordinate>> TryCollectRejectedMaterialsCoordinates(Inference model);
 }

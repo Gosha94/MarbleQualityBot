@@ -3,13 +3,13 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using MarbleQualityBot.Core.Domain.Entities;
 using SixLabors.Fonts;
-using System.Linq;
 
 namespace MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
 
 public class ExpertService : IExpertService
 {
     private const int _PADDING_PX = 5;
+    private const double _LOWER_THRESHOLD = 0.5;
     private const string _REJECTED_CLASS = "1";
 
     public Task HighlightPredictionsOnImage(string imagePath, Inference model)
@@ -71,4 +71,13 @@ public class ExpertService : IExpertService
                         CenterY = p.Height != 0 ? Math.Round(p.Y + p.Height / 2) : Math.Round(p.Y)
                     })
                     .ToList());
+
+    public Task<Inference> FilterInferenceByThreshold(Inference inference)
+    {
+        inference.Predictions = inference.Predictions
+            .Where(p => p.Confidence > _LOWER_THRESHOLD)
+            .ToList();
+
+        return Task.FromResult(inference);
+    }
 }

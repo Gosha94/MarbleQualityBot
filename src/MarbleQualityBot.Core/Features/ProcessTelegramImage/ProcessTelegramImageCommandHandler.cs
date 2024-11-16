@@ -24,7 +24,7 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
     private readonly TelegramBotSettings _botSettings;
     private readonly int _maxFileSizeInBytes;
     private readonly ILogger<ProcessTelegramTextHandler> _logger;
-
+    
     public ProcessTelegramImageCommandHandler(
         ITelegramBotClient botClient,
         IDetectionApi detectionApi,
@@ -65,12 +65,12 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
             var fullFilePath = $"https://api.telegram.org/file/bot{_botSettings.BotToken}/{file.FilePath}";
 
             // Just request throttling
-            await Task.Delay(3000);
+            await Task.Delay(2000);
 
             var response = await _detectionApi.DetectFromUrl(fullFilePath);
             var inferenceModel = JsonSerializer.Deserialize<Inference>(response) ?? new Inference();
 
-            var filteredInference = FilterInferenceBy(inferenceModel, 0.4);
+            var filteredInference = await _expertSystem.FilterInferenceByThreshold(inferenceModel);
 
             var localImagePath = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.LocalStoragePath, Guid.NewGuid() + Path.GetExtension(file.FilePath));
 
@@ -123,12 +123,5 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
             System.IO.File.Delete(jsonFileName);
             System.IO.File.Delete(localImagePath);
         }
-    }
-
-    private Inference FilterInferenceBy(Inference inference, double lowerThreshold)
-    {
-        inference.Predictions = inference.Predictions.Where(p => p.Confidence > lowerThreshold).ToList();
-
-        return inference;
     }
 }
