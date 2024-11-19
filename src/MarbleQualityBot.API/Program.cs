@@ -17,6 +17,12 @@ builder.Services.Configure<TelegramBotSettings>(builder.Configuration.GetSection
 builder.Services.PostConfigure<TelegramBotSettings>(options =>
 {
     var secretValue = builder.Configuration["TelegramBotSettings:Token"];
+
+    if (builder.Environment.IsProduction())
+    {
+        secretValue = Environment.GetEnvironmentVariable("BOT_TOKEN");
+    }
+
     options.BotToken = secretValue ?? string.Empty;
     options.FileUrl = options.FileUrl + secretValue;
 });
@@ -26,11 +32,16 @@ builder.Services.Configure<DetectionApiSettings>(builder.Configuration.GetSectio
 builder.Services.PostConfigure<DetectionApiSettings>(options =>
 {
     var secretValue = builder.Configuration["DetectionApiSettings:ApiKey"];
+
+    if (builder.Environment.IsProduction())
+    {
+        secretValue = Environment.GetEnvironmentVariable("API_KEY");
+    }
+
     options.ApiKey = secretValue ?? string.Empty;
 });
 
 builder.Services.AddTransient<IExpertService, ExpertService>();
-
 builder.Services.AddTransient<IDetectionApi, DetectionApi>();
 
 builder.Services.AddTransient<ITelegramBotClient>(sp =>
