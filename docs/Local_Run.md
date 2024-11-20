@@ -6,6 +6,6 @@
 # Set up webhook call from Telegram to your backend api, go to Postman and run:
 
 curl --location 'https://api.telegram.org/bot(YOUR_TELEGRAM_API_TOKEN)/setWebhook' \
---form 'url="(YOUR_EXTERNAL_NGROK_URL)/api/safe-head-backend/webhook"'
+--form 'url="(YOUR_EXTERNAL_NGROK_URL)/api/marble-quality-bot-backend/webhook"'
 
 # Then start sending messages into your telegram chat, Done!

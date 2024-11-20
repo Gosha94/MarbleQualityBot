@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 namespace MarbleQualityBot.API.Controllers;
 
 [ApiController]
-[Route("api/safe-head-backend")]
+[Route("api/marble-quality-bot-backend")]
 public class MarbleQualityBotController : ControllerBase
 {
     [HttpPost("webhook")]
