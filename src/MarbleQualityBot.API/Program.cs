@@ -8,19 +8,25 @@ using MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .AddUserSecrets<Program>();
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+builder.Configuration.AddEnvironmentVariables("BOT_TOKEN");
+builder.Configuration.AddEnvironmentVariables("API_KEY");
+
+if (!builder.Environment.IsProduction())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
 
 builder.Services.Configure<TelegramBotSettings>(builder.Configuration.GetSection("TelegramBotSettings"));
 
 builder.Services.PostConfigure<TelegramBotSettings>(options =>
 {
-    var secretValue = builder.Configuration["TelegramBotSettings:Token"];
+    var secretValue = Environment.GetEnvironmentVariable("BOT_TOKEN");
 
-    if (builder.Environment.IsProduction())
+    if (string.IsNullOrEmpty(secretValue))
     {
-        secretValue = Environment.GetEnvironmentVariable("BOT_TOKEN");
+        secretValue = builder.Configuration["TelegramBotSettings:Token"];
     }
 
     options.BotToken = secretValue ?? string.Empty;
@@ -31,11 +37,12 @@ builder.Services.Configure<DetectionApiSettings>(builder.Configuration.GetSectio
 
 builder.Services.PostConfigure<DetectionApiSettings>(options =>
 {
-    var secretValue = builder.Configuration["DetectionApiSettings:ApiKey"];
 
-    if (builder.Environment.IsProduction())
+    var secretValue = Environment.GetEnvironmentVariable("API_KEY");
+
+    if (string.IsNullOrEmpty(secretValue))
     {
-        secretValue = Environment.GetEnvironmentVariable("API_KEY");
+        secretValue = builder.Configuration["DetectionApiSettings:ApiKey"];
     }
 
     options.ApiKey = secretValue ?? string.Empty;
@@ -67,10 +74,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseHttpsRedirection();
-
-//app.UseAuthorization();
 
 app.MapControllers();
 
