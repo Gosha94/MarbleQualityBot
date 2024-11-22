@@ -72,7 +72,9 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
 
             var filteredInference = await _expertSystem.FilterInferenceByThreshold(inferenceModel);
 
-            var localImagePath = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.LocalStoragePath, Guid.NewGuid() + Path.GetExtension(file.FilePath));
+            var currentProcessTraceGuid = Guid.NewGuid();
+
+            var localImagePath = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.LocalStoragePath, currentProcessTraceGuid + Path.GetExtension(file.FilePath));
 
             using (var httpClient = new HttpClient())
             {
@@ -113,8 +115,8 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
                 await _botClient.SendTextMessageAsync(request.Message.ChatId, sb.ToString(), cancellationToken: ct);
             }
 
-            var jsonFileName = $"detection_result_{Guid.NewGuid()}.json";
-            var localJsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.LocalStoragePath, Guid.NewGuid() + Path.GetExtension(file.FilePath));
+            var jsonFileName = $"detection_result_{currentProcessTraceGuid}.json";
+            var localJsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), _botSettings.LocalStoragePath, jsonFileName);
             await System.IO.File.WriteAllTextAsync(localJsonFilePath, response);
 
             // Just delay before deleting image
