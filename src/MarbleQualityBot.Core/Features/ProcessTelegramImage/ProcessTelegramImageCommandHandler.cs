@@ -122,7 +122,7 @@ public class ProcessTelegramImageCommandHandler : IRequestHandler<ProcessTelegra
             // Just delay before deleting image
             await Task.Delay(1000);
 
-            System.IO.File.Delete(jsonFileName);
+            System.IO.File.Delete(localJsonFilePath);
             System.IO.File.Delete(localImagePath);
         }
     }
