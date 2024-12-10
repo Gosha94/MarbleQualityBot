@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using MarbleQualityBot.Core.Domain.Entities;
-using MarbleQualityBot.Core.Features.ProcessObjectOutline.Services;
+using MarbleQualityBot.Core.Services;
 
 namespace MarbleQualityBot.Core.Features.ProcessObjectOutline;
 
@@ -22,7 +22,7 @@ public class OutlineObjectsCommandHandler : IRequestHandler<OutlineObjectsComman
 
     public async Task<bool> Handle(OutlineObjectsCommand request, CancellationToken ct)
     {
-        _outliningService.HighlightPredictionsOnImage(request.ImagePath, request.PredictionModel);
+        await _outliningService.HighlightPredictionsOnImage(request.ImagePath, request.PredictionModel, ct);
 
         _logger.LogInformation($"Image was outlined, saved instead an original one here: {request.ImagePath}");
         return true;
