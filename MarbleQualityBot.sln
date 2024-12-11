@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{AC824EBB-5
 		docs\inference_example_result.json = docs\inference_example_result.json
 		docs\inference_result_e10af7e9-5c31-4d93-aece-310b2d45e986.json = docs\inference_result_e10af7e9-5c31-4d93-aece-310b2d45e986.json
 		docs\Local_Run.md = docs\Local_Run.md
+		README.md = README.md
 		docs\white-marble.jpg = docs\white-marble.jpg
 		docs\yellow-marble.jpg = docs\yellow-marble.jpg
 	EndProjectSection
@@ -24,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarbleQualityBot.API", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarbleQualityBot.DTO", "src\MarbleQualityBot.DTO\MarbleQualityBot.DTO.csproj", "{2F8E5B57-FCCA-4F0E-93BC-ED0439BF002B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarbleQualityBot.Core.Tests", "tests\MarbleQualityBot.Core.Tests\MarbleQualityBot.Core.Tests.csproj", "{7653FB3B-1F32-40FF-82D7-42A79777A991}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarbleQualityBot.Core.Tests", "tests\MarbleQualityBot.Core.Tests\MarbleQualityBot.Core.Tests.csproj", "{7653FB3B-1F32-40FF-82D7-42A79777A991}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
